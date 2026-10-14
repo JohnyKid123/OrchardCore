@@ -6,11 +6,12 @@ namespace OrchardCore.Contents.ViewModels;
 /// </summary>
 public sealed class BatchContentCreateViewModel
 {
-    public string ContentType { get; set; }
+    // Resolved from the route and content definition, never trusted from the POST.
+    public string? ContentType { get; set; }
 
-    public string ContentTypeDisplayName { get; set; }
+    public string? ContentTypeDisplayName { get; set; }
 
-    public string Csv { get; set; } = string.Empty;
+    public string? Csv { get; set; } = string.Empty;
 
     public IReadOnlyList<string> Columns { get; set; } = [];
 
