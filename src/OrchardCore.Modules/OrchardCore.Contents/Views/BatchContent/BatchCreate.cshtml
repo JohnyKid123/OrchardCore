@@ -1,0 +1,85 @@
+@model BatchContentCreateViewModel
+
+<zone Name="Title">
+    <breadcrumb name="ContentsBatchCreate" title="@T["Batch create {0}", Model.ContentTypeDisplayName]">
+        <breadcrumb-item id="Contents" action="List" controller="Admin" area="OrchardCore.Contents" route-contentTypeId="@Model.ContentType">
+            @T["Manage Content"]
+        </breadcrumb-item>
+    </breadcrumb>
+</zone>
+
+<div class="card text-bg-theme mb-3">
+    <div class="card-body">
+        <h2 class="h5 mb-3">@T["Create multiple {0} items", Model.ContentTypeDisplayName]</h2>
+        <p class="text-muted">
+            @T["Paste CSV data exported from a spreadsheet. The first row contains column names, and each following row is a new content item. No JSON or import permission is required."]
+        </p>
+        <p class="text-muted">
+            @T["Supported columns: DisplayText, TitlePart.Title (when available), or PartName.FieldName.Text for configured text fields. Up to 100 content items and 20 columns per batch."]
+        </p>
+
+        <form asp-controller="BatchContent"
+              asp-action="BatchCreatePOST"
+              asp-route-id="@Model.ContentType"
+              method="post">
+            @Html.AntiForgeryToken()
+
+            <div asp-validation-summary="All" class="text-danger"></div>
+
+            <div class="mb-3">
+                <label asp-for="Csv" class="form-label">@T["CSV data"]</label>
+                <textarea asp-for="Csv" class="form-control font-monospace" rows="10"
+                          spellcheck="false" aria-describedby="csv-help"></textarea>
+                <div id="csv-help" class="form-text">
+                    @T["Use comma-separated values. Wrap values in double quotes if they contain commas or line breaks."]
+                </div>
+            </div>
+
+            <div class="d-flex flex-wrap gap-2">
+                <button type="submit" name="operation" value="preview" class="btn btn-secondary">
+                    @T["Preview"]
+                </button>
+                <button type="submit" name="operation" value="draft" class="btn btn-primary">
+                    @T["Create drafts"]
+                </button>
+                <button type="submit" name="operation" value="publish" class="btn btn-success">
+                    @T["Create and publish"]
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@if (Model.Rows.Count > 0)
+{
+    <div class="card text-bg-theme">
+        <div class="card-body">
+            <h3 class="h5">@T["Preview: {0} content items", Model.Rows.Count]</h3>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            @foreach (var column in Model.Columns)
+                            {
+                                <th scope="col">@column</th>
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (var rowIndex = 0; rowIndex < Model.Rows.Count; rowIndex++)
+                        {
+                            <tr>
+                                <th scope="row">@(rowIndex + 1)</th>
+                                @foreach (var value in Model.Rows[rowIndex])
+                                {
+                                    <td>@value</td>
+                                }
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+}
