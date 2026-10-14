@@ -11,7 +11,11 @@
 
 @if (Model.CreatableTypes.Count == 1)
 {
-    <a class="btn btn-secondary" href="@Url.RouteUrl(new { area = "OrchardCore.Contents", controller = "Admin", action = "Create", id = Model.CreatableTypes.First().Value, returnUrl = FullRequestPath })">@T["New {0}", Model.CreatableTypes.First().Text]</a>
+    var item = Model.CreatableTypes.First();
+    <div class="d-flex flex-wrap gap-2">
+        <a class="btn btn-secondary" href="@Url.RouteUrl(new { area = "OrchardCore.Contents", controller = "Admin", action = "Create", id = item.Value, returnUrl = FullRequestPath })">@T["New {0}", item.Text]</a>
+        <a class="btn btn-secondary" href="@Url.RouteUrl(new { area = "OrchardCore.Contents", controller = "BatchContent", action = "BatchCreate", id = item.Value })">@T["Batch create"]</a>
+    </div>
 }
 else
 {
@@ -22,7 +26,8 @@ else
         <ul class="dropdown-menu dropdown-menu-end scrollable">
             @foreach (var item in Model.CreatableTypes)
             {
-                <li><a class="dropdown-item" href="@Url.RouteUrl(new { area = "OrchardCore.Contents", controller = "Admin", action = "Create", id = @item.Value, returnUrl = FullRequestPath })">@D[item.Text, "Content Types"]</a></li>
+                <li><a class="dropdown-item" href="@Url.RouteUrl(new { area = "OrchardCore.Contents", controller = "Admin", action = "Create", id = item.Value, returnUrl = FullRequestPath })">@T["New {0}", D[item.Text, "Content Types"]]</a></li>
+                <li><a class="dropdown-item" href="@Url.RouteUrl(new { area = "OrchardCore.Contents", controller = "BatchContent", action = "BatchCreate", id = item.Value })">@T["Batch create {0}", D[item.Text, "Content Types"]]</a></li>
             }
         </ul>
     </div>
