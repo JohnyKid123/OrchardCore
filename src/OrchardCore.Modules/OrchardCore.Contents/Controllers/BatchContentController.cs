@@ -147,6 +147,12 @@ public sealed class BatchContentController : Controller
                 var validation = await _contentManager.ValidateAsync(contentItem);
                 if (!validation.Succeeded)
                 {
+                    if (validation.Errors.Count == 0)
+                    {
+                        ModelState.AddModelError(nameof(model.Csv),
+                            $"Record {index + 2} failed content validation.");
+                    }
+
                     foreach (var error in validation.Errors)
                     {
                         ModelState.AddModelError(nameof(model.Csv),
